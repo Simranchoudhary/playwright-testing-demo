@@ -2,8 +2,6 @@
 
 A production-ready UI and API test automation framework built with **Playwright** and **TypeScript**, following the **Page Object Model (POM)** design pattern.
 
-![CI](https://github.com/<your-username>/playwright-testing-demo/actions/workflows/ci.yml/badge.svg)
-
 ---
 
 ## Features
