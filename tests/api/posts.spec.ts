@@ -1,85 +1,88 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures';
+import { POST_PAYLOAD, UPDATED_POST, PATCH_PAYLOAD } from '../../src/utils/testData';
+import { Post } from '../../src/types/api.types';
 
-test.describe('JSONPlaceholder API - Posts', () => {
-  test('GET /posts - should return a list of posts', async ({ request }) => {
-    const response = await request.get('/posts');
+test.describe('Posts API', () => {
+  test.describe('GET /posts', () => {
+    test('returns a non-empty array of posts', async ({ postsApi }) => {
+      const response = await postsApi.getAll();
 
-    expect(response.status()).toBe(200);
-    const posts = await response.json();
-    expect(Array.isArray(posts)).toBeTruthy();
-    expect(posts.length).toBeGreaterThan(0);
-    expect(posts[0]).toMatchObject({
-      id: expect.any(Number),
-      title: expect.any(String),
-      body: expect.any(String),
-      userId: expect.any(Number),
+      expect(response.status()).toBe(200);
+      const posts: Post[] = await response.json();
+      expect(Array.isArray(posts)).toBeTruthy();
+      expect(posts.length).toBeGreaterThan(0);
+    });
+
+    test('each post has the expected shape', async ({ postsApi }) => {
+      const posts: Post[] = await (await postsApi.getAll()).json();
+
+      posts.forEach((post) => {
+        expect(post).toMatchObject({
+          id: expect.any(Number),
+          userId: expect.any(Number),
+          title: expect.any(String),
+          body: expect.any(String),
+        });
+      });
     });
   });
 
-  test('GET /posts/:id - should return a single post', async ({ request }) => {
-    const response = await request.get('/posts/1');
+  test.describe('GET /posts/:id', () => {
+    test('returns the correct post by ID', async ({ postsApi }) => {
+      const response = await postsApi.getById(1);
 
-    expect(response.status()).toBe(200);
-    const post = await response.json();
-    expect(post).toMatchObject({
-      id: 1,
-      title: expect.any(String),
-      body: expect.any(String),
-      userId: expect.any(Number),
+      expect(response.status()).toBe(200);
+      const post: Post = await response.json();
+      expect(post.id).toBe(1);
+    });
+
+    test('returns 404 for a non-existent post', async ({ postsApi }) => {
+      const response = await postsApi.getById(99999);
+      expect(response.status()).toBe(404);
     });
   });
 
-  test('GET /posts/:id - should return 404 for non-existent post', async ({ request }) => {
-    const response = await request.get('/posts/99999');
-    expect(response.status()).toBe(404);
-  });
+  test.describe('POST /posts', () => {
+    test('creates a post and returns 201 with the new resource', async ({ postsApi }) => {
+      const response = await postsApi.create(POST_PAYLOAD);
 
-  test('POST /posts - should create a new post', async ({ request }) => {
-    const newPost = {
-      title: 'Test Post',
-      body: 'This is a test post body.',
-      userId: 1,
-    };
-
-    const response = await request.post('/posts', { data: newPost });
-
-    expect(response.status()).toBe(201);
-    const created = await response.json();
-    expect(created).toMatchObject({
-      id: expect.any(Number),
-      title: newPost.title,
-      body: newPost.body,
-      userId: newPost.userId,
+      expect(response.status()).toBe(201);
+      const created: Post = await response.json();
+      expect(created).toMatchObject({
+        id: expect.any(Number),
+        title: POST_PAYLOAD.title,
+        body: POST_PAYLOAD.body,
+        userId: POST_PAYLOAD.userId,
+      });
     });
   });
 
-  test('PUT /posts/:id - should update a post', async ({ request }) => {
-    const updatedPost = {
-      id: 1,
-      title: 'Updated Title',
-      body: 'Updated body content.',
-      userId: 1,
-    };
+  test.describe('PUT /posts/:id', () => {
+    test('replaces a post and returns the updated resource', async ({ postsApi }) => {
+      const payload = { ...POST_PAYLOAD, ...UPDATED_POST };
+      const response = await postsApi.update(1, payload);
 
-    const response = await request.put('/posts/1', { data: updatedPost });
-
-    expect(response.status()).toBe(200);
-    const result = await response.json();
-    expect(result.title).toBe('Updated Title');
-  });
-
-  test('PATCH /posts/:id - should partially update a post', async ({ request }) => {
-    const response = await request.patch('/posts/1', {
-      data: { title: 'Patched Title' },
+      expect(response.status()).toBe(200);
+      const updated: Post = await response.json();
+      expect(updated.title).toBe(UPDATED_POST.title);
+      expect(updated.body).toBe(UPDATED_POST.body);
     });
-
-    expect(response.status()).toBe(200);
-    const result = await response.json();
-    expect(result.title).toBe('Patched Title');
   });
 
-  test('DELETE /posts/:id - should delete a post', async ({ request }) => {
-    const response = await request.delete('/posts/1');
-    expect(response.status()).toBe(200);
+  test.describe('PATCH /posts/:id', () => {
+    test('partially updates a post', async ({ postsApi }) => {
+      const response = await postsApi.partialUpdate(1, PATCH_PAYLOAD);
+
+      expect(response.status()).toBe(200);
+      const patched: Post = await response.json();
+      expect(patched.title).toBe(PATCH_PAYLOAD.title);
+    });
+  });
+
+  test.describe('DELETE /posts/:id', () => {
+    test('deletes a post and returns 200', async ({ postsApi }) => {
+      const response = await postsApi.remove(1);
+      expect(response.status()).toBe(200);
+    });
   });
 });
