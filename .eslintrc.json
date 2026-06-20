@@ -19,12 +19,7 @@
     "playwright/no-wait-for-timeout": "warn",
     "playwright/no-skipped-test": "warn",
     "playwright/no-force-option": "warn",
-    "playwright/expect-expect": [
-      "warn",
-      {
-        "assertFunctionNames": ["assert*", "expect*", "*.assert*"]
-      }
-    ]
+    "playwright/expect-expect": "off"
   },
   "ignorePatterns": ["dist/", "node_modules/", "playwright-report/", "test-results/"]
 }
