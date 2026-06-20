@@ -13,9 +13,7 @@ async function globalSetup(): Promise<void> {
   const apiResponse = await context.get(`${apiURL}/posts/1`);
   if (!apiResponse.ok()) {
     await context.dispose();
-    throw new Error(
-      `API health check failed: ${apiURL}/posts/1 returned ${apiResponse.status()}`,
-    );
+    throw new Error(`API health check failed: ${apiURL}/posts/1 returned ${apiResponse.status()}`);
   }
 
   // UI health check
