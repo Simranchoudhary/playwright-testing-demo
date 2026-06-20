@@ -17,13 +17,13 @@ A production-ready UI and API test automation framework built with **Playwright*
 
 ## Tech stack
 
-| Tool | Purpose |
-|------|---------|
-| [Playwright](https://playwright.dev/) | Browser automation & API testing |
-| TypeScript | Type safety across the entire framework |
-| JSONPlaceholder | REST API test target |
-| TodoMVC | UI test target |
-| GitHub Actions | CI/CD pipeline |
+| Tool                                  | Purpose                                 |
+| ------------------------------------- | --------------------------------------- |
+| [Playwright](https://playwright.dev/) | Browser automation & API testing        |
+| TypeScript                            | Type safety across the entire framework |
+| JSONPlaceholder                       | REST API test target                    |
+| TodoMVC                               | UI test target                          |
+| GitHub Actions                        | CI/CD pipeline                          |
 
 ---
 
@@ -77,25 +77,28 @@ npm test
 
 ## Available scripts
 
-| Command | Description |
-|---------|-------------|
-| `npm test` | Run all tests (UI + API) |
-| `npm run test:ui` | UI tests only |
-| `npm run test:api` | API tests only |
+| Command               | Description                         |
+| --------------------- | ----------------------------------- |
+| `npm test`            | Run all tests (UI + API)            |
+| `npm run test:ui`     | UI tests only                       |
+| `npm run test:api`    | API tests only                      |
 | `npm run test:headed` | Run UI tests with a visible browser |
-| `npm run report` | Open the last HTML test report |
+| `npm run report`      | Open the last HTML test report      |
 
 ---
 
 ## Design patterns used
 
 ### Page Object Model
+
 Each page is encapsulated in a class that exposes **actions** (`addTodo`, `filterBy`) and **assertions** (`assertTodoCount`, `assertTodoCompleted`). Tests never interact with locators directly.
 
 ### API Client abstraction
+
 `BaseApi` provides generic HTTP method wrappers. `PostsApi` and `UsersApi` extend it with endpoint-specific methods, keeping tests clean and readable.
 
 ### Custom Fixtures
+
 Playwright fixtures inject `todoPage`, `postsApi`, and `usersApi` into tests automatically — no manual setup or teardown needed.
 
 ```typescript

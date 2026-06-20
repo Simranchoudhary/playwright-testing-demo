@@ -45,7 +45,8 @@ export class TodoPage extends BasePage {
   async deleteTodo(text: string) {
     const item = this.getTodoItem(text);
     await item.hover();
-    await item.locator('.destroy').click({ force: true });
+    await item.hover();
+    await item.locator('.destroy').click();
   }
 
   async editTodo(oldText: string, newText: string) {

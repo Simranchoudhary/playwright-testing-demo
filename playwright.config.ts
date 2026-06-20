@@ -1,4 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export default defineConfig({
   testDir: './tests',
@@ -7,10 +10,9 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
 
-  reporter: [
-    ['html', { open: 'never' }],
-    ['list'],
-  ],
+  globalSetup: require.resolve('./global-setup'),
+
+  reporter: [['html', { open: 'never' }], ['list']],
 
   use: {
     trace: 'on-first-retry',
@@ -24,14 +26,14 @@ export default defineConfig({
       testMatch: '**/ui/**/*.spec.ts',
       use: {
         ...devices['Desktop Chrome'],
-        baseURL: 'https://demo.playwright.dev',
+        baseURL: process.env.UI_BASE_URL ?? 'https://demo.playwright.dev',
       },
     },
     {
       name: 'api',
       testMatch: '**/api/**/*.spec.ts',
       use: {
-        baseURL: 'https://jsonplaceholder.typicode.com',
+        baseURL: process.env.API_BASE_URL ?? 'https://jsonplaceholder.typicode.com',
       },
     },
   ],

@@ -1,5 +1,10 @@
 import { APIRequestContext, APIResponse } from '@playwright/test';
 
+export interface TimedResponse {
+  response: APIResponse;
+  durationMs: number;
+}
+
 export abstract class BaseApi {
   protected readonly request: APIRequestContext;
   protected abstract readonly basePath: string;
@@ -10,6 +15,12 @@ export abstract class BaseApi {
 
   protected async get(path: string): Promise<APIResponse> {
     return this.request.get(`${this.basePath}${path}`);
+  }
+
+  protected async timedGet(path: string): Promise<TimedResponse> {
+    const start = performance.now();
+    const response = await this.request.get(`${this.basePath}${path}`);
+    return { response, durationMs: performance.now() - start };
   }
 
   protected async post(path: string, data: unknown): Promise<APIResponse> {

@@ -1,5 +1,5 @@
 import { APIRequestContext, APIResponse } from '@playwright/test';
-import { BaseApi } from './BaseApi';
+import { BaseApi, TimedResponse } from './BaseApi';
 import { CreatePostPayload } from '../types/api.types';
 
 export class PostsApi extends BaseApi {
@@ -11,6 +11,10 @@ export class PostsApi extends BaseApi {
 
   getAll(): Promise<APIResponse> {
     return this.get('');
+  }
+
+  getAllTimed(): Promise<TimedResponse> {
+    return this.timedGet('');
   }
 
   getById(id: number): Promise<APIResponse> {
