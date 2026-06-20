@@ -22,10 +22,26 @@ export default defineConfig({
 
   projects: [
     {
-      name: 'ui',
+      name: 'ui-chromium',
       testMatch: '**/ui/**/*.spec.ts',
       use: {
         ...devices['Desktop Chrome'],
+        baseURL: process.env.UI_BASE_URL ?? 'https://demo.playwright.dev',
+      },
+    },
+    {
+      name: 'ui-firefox',
+      testMatch: '**/ui/**/*.spec.ts',
+      use: {
+        ...devices['Desktop Firefox'],
+        baseURL: process.env.UI_BASE_URL ?? 'https://demo.playwright.dev',
+      },
+    },
+    {
+      name: 'ui-webkit',
+      testMatch: '**/ui/**/*.spec.ts',
+      use: {
+        ...devices['Desktop Safari'],
         baseURL: process.env.UI_BASE_URL ?? 'https://demo.playwright.dev',
       },
     },

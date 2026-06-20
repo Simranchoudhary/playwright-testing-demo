@@ -84,7 +84,7 @@ jobs:
         run: npx playwright install --with-deps ${{ matrix.browser }}
 
       - name: Run UI tests
-        run: npx playwright test --project=ui
+        run: npx playwright test --project=ui-${{ matrix.browser }}
         env:
           UI_BASE_URL: ${{ vars.UI_BASE_URL || 'https://demo.playwright.dev' }}
 
